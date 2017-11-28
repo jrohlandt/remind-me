@@ -14,23 +14,63 @@ struct reminder {
     char *message;
 };
 
+void displayReminders(char* filename);
+int appendReminder(char* filename, struct reminder *r);
+
+int main(int argc, char **argv)
+{    
+    char *ADD = "a";
+    char *SHOW = "s";
+    char *filename = "data.csv";
+
+    if (argc > 1 && argc < 4 && strcmp(argv[1],  "s") != 0) {
+        printf("Too few arguments.\n Usage: remindme \"2017-11-28\" \"Don\'t forget to finish task.\"");        
+        exit(1);
+    }
+        
+    if (strcmp(argv[1], ADD) == 0) {
+        struct reminder r;
+        r.datetime = argv[2];
+        r.subject = "Reminder - ";
+        r.message = argv[3];
+
+        appendReminder(filename, &r);
+        displayReminders(filename);
+    }
+   
+    if (strcmp(argv[1], SHOW) == 0) {
+        displayReminders(filename);
+    }
+
+    return 0;    
+}
+
 void displayReminders(char* filename) {
 
     FILE *fp;
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t read;
+
     fp = fopen(filename, "r");
     if (fp == NULL) {
         printf("Could not open file %s for reading.", filename);
         exit(1);
     }
   
-    char s[100];
-    while (!feof(fp)) {
-        fscanf(fp, "%*s%99[^\n]", s);
-        printf("%s\n", s);
-     } 
-    
+   
+    while ((read = getline(&line, &len, fp)) != -1) {
+        //printf("Line length: %zu \n", read);
+        printf("%s", line);
+    } 
+    printf("\n"); 
     fclose(fp);
+
+    if (line) {
+        free(line);
+    }
 }
+
 
 int appendReminder(char* filename, struct reminder *r) {
     FILE *fp;
@@ -46,41 +86,3 @@ int appendReminder(char* filename, struct reminder *r) {
 }
 
 
-
-int main(int argc, char **argv)
-{
-    
-    char *ADD = "a";
-    char *SHOW = "s";
-
-//    printf("%d", strcmp(argv[1], "s"));
-    //printf("%s %s %s", argv[0], argv[1], argv[2]); 
-    //return 4;
-
-    if (argc > 1 && argc < 4 && strcmp(argv[1],  "s") != 0) {
-        printf("Too few arguments.\n Usage: remindme \"2017-11-28\" \"Don\'t forget to finish task.\"");        
-        exit(1);
-    }
-    
-    char *filename = "data.csv";
-    
-    if (strcmp(argv[1], ADD) == 0) {
-        struct reminder r;
-        r.datetime = argv[2];
-        r.subject = "Reminder - ";
-        r.message = argv[3];
-
-        //char subject[30] = "Reminder: ";
-        //strcat(subject, r.subject);
-        // printf("\n%s,%s,%s", r.datetime, subject, r.message);   
-        // return 0;
-        appendReminder(filename, &r);
-        displayReminders(filename);
-    }
-   
-    if (strcmp(argv[1], SHOW) == 0) {
-        displayReminders(filename);
-    }
-
-    return 0;    
-}
