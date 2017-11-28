@@ -32,8 +32,11 @@ void displayReminders(char* filename) {
     fclose(fp);
 } 
 
-int main(void)
+int main(int argc, char **argv)
 {
+    printf("%s %s %s", argv[0], argv[1], argv[2]); 
+    return 4;
+
     char *filename = "data.csv";
     struct reminder r;
     r.datetime = "2017-11-26 10:25";
