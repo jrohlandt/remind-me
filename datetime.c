@@ -4,16 +4,24 @@
 #include <stdlib.h>
  
 char *monthsAbbreviated[12] = {"jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"};
-char *months[12] = {"january", "febuary", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"};
+char *months[12] = {"january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"};
 
 int makeMonth(struct tm *dt, char *month_string) {
     int i;
-    for (i = 0; i <= 12; i++) {
+    for (i = 0; i < 12; i++) {
+       // printf("%d, abbr: %s, %s\n", i, monthsAbbreviated[i], month_string);
         if (strcmp(monthsAbbreviated[i], month_string) == 0) {
+            
             (*dt).tm_mon = i + 1;
+         //  printf("return 0");
             return 0;
-        }
+        } 
+        //else if (strcmp(months[i], month_string) == 0) {
+          //  (*dt).tm_mon = i + 1;
+            //return 0;
+       // }
     }
+    //printf("return 1");   
     return 1;
 }
 
@@ -28,16 +36,15 @@ int main ()
     printf("Enter date (e.g. 14 apr 2017 13:20) :");
     scanf("%d %3s %d %d:%d", &dt.tm_mday, month_string, &dt.tm_year, &dt.tm_hour, &dt.tm_min );
 // todo fix makemonth it always returns 0
-  printf("mk: %d",makeMonth(&dt, month_string) ); exit;
+ // printf("mk: %d",makeMonth(&dt, month_string) ); exit;
     if (makeMonth(&dt, month_string) == 1) {
         printf("Invalid month!");
         exit(1);
     }
 
-    datetime = mktime(&dt);
-
+    //datetime = mktime(&dt);
         
-    printf("Date: %02d-%02d-%d %02d:%02d, Timestamp: %ld\n", dt.tm_mday, dt.tm_mon, dt.tm_year, dt.tm_hour, dt.tm_min, datetime); 
+    printf("Date: %02d-%02d-%d %02d:%02d", dt.tm_mday, dt.tm_mon, dt.tm_year, dt.tm_hour, dt.tm_min); 
 
    // struct date dt;
     
