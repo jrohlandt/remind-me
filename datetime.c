@@ -28,19 +28,32 @@ int makeMonth(struct tm *dt, char *month_string) {
 
 int main ()
 {
+    int day;
+    int month;
     char month_string[3];
+    int year;
+    int hours;
+    int minutes;
 
     time_t datetime;
     struct tm dt;
     
     printf("Enter date (e.g. 14 apr 2017 13:20) :");
-    scanf("%d %3s %d %d:%d", &dt.tm_mday, month_string, &dt.tm_year, &dt.tm_hour, &dt.tm_min );
+    scanf("%2d %3s %4d %2d:%2d", &day, month_string, &year, &hours, &minutes );
+//return 0;
+    printf("%2d %3s %4d %02d:%02d", day, month_string, year, hours, minutes );
+//return 0;
 // todo fix makemonth it always returns 0
  // printf("mk: %d",makeMonth(&dt, month_string) ); exit;
     if (makeMonth(&dt, month_string) == 1) {
         printf("Invalid month!");
         exit(1);
     }
+
+    dt.tm_mday = day;
+    dt.tm_year = year;
+    dt.tm_hour = hours;
+    dt.tm_min = minutes; 
 
     //datetime = mktime(&dt);
         
