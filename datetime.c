@@ -11,17 +11,10 @@ int makeMonth(struct tm *dt, char *month_string) {
     for (i = 0; i < 12; i++) {
        // printf("%d, abbr: %s, %s\n", i, monthsAbbreviated[i], month_string);
         if (strcmp(monthsAbbreviated[i], month_string) == 0) {
-            
-            (*dt).tm_mon = i + 1;
-         //  printf("return 0");
+            (*dt).tm_mon = i; 
             return 0;
         } 
-        //else if (strcmp(months[i], month_string) == 0) {
-          //  (*dt).tm_mon = i + 1;
-            //return 0;
-       // }
     }
-    //printf("return 1");   
     return 1;
 }
 
@@ -35,28 +28,35 @@ int main ()
     int hours;
     int minutes;
 
-    time_t datetime;
+    int timestamp;
     struct tm dt;
+    char buffer[80];
     
     printf("Enter date (e.g. 14 apr 2017 13:20) :");
     scanf("%2d %3s %4d %2d:%2d", &day, month_string, &year, &hours, &minutes );
-//return 0;
-    printf("%2d %3s %4d %02d:%02d", day, month_string, year, hours, minutes );
-//return 0;
-// todo fix makemonth it always returns 0
- // printf("mk: %d",makeMonth(&dt, month_string) ); exit;
+    printf("String: %2d %3s %4d %02d:%02d\n", day, month_string, year, hours, minutes );
     if (makeMonth(&dt, month_string) == 1) {
         printf("Invalid month!");
         exit(1);
     }
 
     dt.tm_mday = day;
-    dt.tm_year = year;
+    dt.tm_year = year-1900;
     dt.tm_hour = hours;
-    dt.tm_min = minutes; 
+    dt.tm_min = minutes;
+    dt.tm_sec = 0;
+ 
+    printf("TM: %d %d %4d %02d:%02d\n", dt.tm_mday, dt.tm_mon, dt.tm_year, dt.tm_hour, dt.tm_min );
 
-    //datetime = mktime(&dt);
-        
+    timestamp = mktime(&dt);
+    if (timestamp == -1) {
+        printf("mktime failed");
+    } else {
+        strftime(buffer, sizeof(buffer), "%c", &dt);
+        printf("Timestamp: %d strftime: %s\n", timestamp, buffer);
+    }
+
+    return 0;
     printf("Date: %02d-%02d-%d %02d:%02d", dt.tm_mday, dt.tm_mon, dt.tm_year, dt.tm_hour, dt.tm_min); 
 
    // struct date dt;
