@@ -62,15 +62,22 @@ int main ()
     // get subject
     printf("Subject:");
     fgets(subject, 256, stdin);
+    if ((strlen(subject) > 0) && (subject[strlen(subject) - 1] == '\n')) {
+        subject[strlen(subject) -1] = '\0';
+    }
+
     printf("Subject - %s", subject);
 
 
     // get message
     printf("Message:");
     fgets(message, 256, stdin);
+    if ((strlen(message) > 0) && (message[strlen(message) - 1] == '\n')) {
+        message[strlen(message) -1] = '\0';
+    }
+
     printf("Message: %s", message);
-    
-    //
+   
     printf("Adding %d %s %s", timestamp, subject, message);
     appendReminder(filename, timestamp, subject, message);
     free(message);
