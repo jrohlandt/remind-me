@@ -8,19 +8,14 @@ char *monthsAbbreviated[12] = {"jan", "feb", "mar", "apr", "may", "jun", "jul", 
 int makeMonth(struct tm *dt, char *month_string);
 
 
-struct reminder {
-    int timestamp;
-    char *subject;
-    char message[100];
-};
-
 void displayReminders(char* filename);
-int appendReminder(char* filename, struct reminder *r);
+int appendReminder(char* filename, int timestamp, char *subject, char *message);
 
 
 
 int main ()
 {
+    char *filename = "data.csv";
     int day;
     int month;
     char month_string[3];
@@ -30,14 +25,17 @@ int main ()
 
     int timestamp;
     struct tm dt;
-    char buffer[80];
-    struct reminder r;
+    //char buffer[80];
     char *subject = malloc(256);
-    // appendReminder(filename, &r);
+    char *date_string = malloc(256);
+    char *message = malloc(256);
 
     printf("Enter date (e.g. 14 apr 2017 13:20) :");
-    scanf("%2d %3s %4d %2d:%2d%*[^\n]%*c", &day, month_string, &year, &hours, &minutes );
+    fgets(date_string, 256, stdin);
+    sscanf(date_string, "%2d %3s %4d %2d:%2d", &day, month_string, &year, &hours, &minutes );
+    free(date_string);
     printf("String: %2d %3s %4d %02d:%02d\n", day, month_string, year, hours, minutes );
+
     if (makeMonth(&dt, month_string) == 1) {
         printf("Invalid month!");
         exit(1);
@@ -52,25 +50,31 @@ int main ()
     printf("TM: %d %d %4d %02d:%02d\n", dt.tm_mday, dt.tm_mon, dt.tm_year, dt.tm_hour, dt.tm_min );
 
 
-    r.timestamp = mktime(&dt);
-    if (r.timestamp == -1) {
+    timestamp = mktime(&dt);
+    if (timestamp == -1) {
         printf("mktime failed");
         exit(1);
     } //else {
         // strftime(buffer, sizeof(buffer), "%c", &dt);
         // printf("Timestamp: %d strftime: %s\n", timestamp, buffer);
-//    }
+    // }
+
+    // get subject
     printf("Subject:");
     fgets(subject, 256, stdin);
     printf("Subject - %s", subject);
-    free(subject);
-    return 0;
-    // scanf("%s", r.subject);
 
+
+    // get message
     printf("Message:");
-    scanf("%s", r.message);
-
-    printf("Adding %d %s %s", r.timestamp, r.subject, r.message);
+    fgets(message, 256, stdin);
+    printf("Message: %s", message);
+    
+    //
+    printf("Adding %d %s %s", timestamp, subject, message);
+    appendReminder(filename, timestamp, subject, message);
+    free(message);
+    free(subject);
     return 0;
 }
 
@@ -112,14 +116,14 @@ void displayReminders(char* filename) {
 }
 
 
-int appendReminder(char* filename, struct reminder *r) {
+int appendReminder(char* filename, int timestamp, char *subject, char *message) {
     FILE *fp;
     if ((fp = fopen(filename, "a")) == NULL) {
         printf("Could not open file %s for writing", filename);
         return 1;
     }
     // (*r) dereference pointer, can also use r->datetime for cleaner syntax
-    fprintf(fp, "\n%d,%s,%s", (*r).timestamp, (*r).subject, (*r).message);
+    fprintf(fp, "\n%d,%s,%s", timestamp, subject, message);
     fclose(fp);
 
     return 0;
