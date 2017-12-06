@@ -66,7 +66,7 @@ int main ()
         subject[strlen(subject) -1] = '\0';
     }
 
-    printf("Subject - %s", subject);
+    //printf("Subject - %s", subject);
 
 
     // get message
@@ -76,9 +76,9 @@ int main ()
         message[strlen(message) -1] = '\0';
     }
 
-    printf("Message: %s", message);
+    //printf("Message: %s", message);
    
-    printf("Adding %d %s %s", timestamp, subject, message);
+    printf("Adding reminder: %d %s %s\n", timestamp, subject, message);
     appendReminder(filename, timestamp, subject, message);
     free(message);
     free(subject);
@@ -130,7 +130,7 @@ int appendReminder(char* filename, int timestamp, char *subject, char *message) 
         return 1;
     }
     // (*r) dereference pointer, can also use r->datetime for cleaner syntax
-    fprintf(fp, "\n%d,%s,%s", timestamp, subject, message);
+    fprintf(fp, "%d,%s,%s\n", timestamp, subject, message);
     fclose(fp);
 
     return 0;
